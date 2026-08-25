@@ -40,7 +40,7 @@ function DebtWatchlist() {
           <h3>Debt watchlist</h3>
           <p>Customers who need a nudge</p>
         </div>
-        <NavLink to="/credit" className="text-link">
+        <NavLink to="/debts" className="text-link">
           View all <ArrowUpRight size={14} />
         </NavLink>
       </div>

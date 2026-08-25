@@ -17,8 +17,8 @@ import WorkspaceModal from "./WorkspaceModal";
 
 const navItems = [
   { label: "Overview", to: "/", icon: LayoutDashboard },
-  { label: "Sales", to: "/sales", icon: ShoppingCart },
-  { label: "Chikwereti", to: "/credit", icon: CreditCard, badge: "8" },
+  { label: "Sales", to: "/sales/new", icon: ShoppingCart },
+  { label: "Chikwereti", to: "/debts", icon: CreditCard, badge: "8" },
   { label: "Inventory", to: "/inventory", icon: Boxes },
   { label: "Analytics", to: "/analytics", icon: BarChart3 },
 ];

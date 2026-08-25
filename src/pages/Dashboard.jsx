@@ -78,7 +78,7 @@ function Dashboard({ currency }) {
             icon={CreditCard}
             title="Add credit sale"
             text="Keep your ledger up to date"
-            to="/credit"
+            to="/debts"
           />
           <QuickAction
             icon={Boxes}
