@@ -9,6 +9,7 @@ import AppShell from "./components/AppShell";
 import AuthLayout from "./components/AuthLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
+import CustomerDashboard from "./pages/CustomerDashboard";
 import { Login } from "./pages/Login";
 import Signup from "./pages/Signup";
 import VerifyPin from "./pages/VerifyPin";
@@ -54,8 +55,12 @@ function App() {
 }
 
 function DashboardRoute() {
-  const { currency } = useOutletContext();
-  return <Dashboard currency={currency} />;
+  const { currency, profile, role } = useOutletContext();
+  return role === "customer" ? (
+    <CustomerDashboard currency={currency} profile={profile} />
+  ) : (
+    <Dashboard currency={currency} />
+  );
 }
 function SalesRoute() {
   const { currency } = useOutletContext();

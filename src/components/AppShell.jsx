@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import AppHeader from "./AppHeader";
 import Sidebar from "./Sidebar";
 import { defaultProfile } from "../data/profile";
+import CustomerDashboard from "../pages/CustomerDashboard";
 
 function AppShell() {
   const [profile, setProfile] = useState(() => ({
@@ -11,6 +12,9 @@ function AppShell() {
   }));
   const [currency, setCurrency] = useState(profile.currency || "USD");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const role =
+    profile.role || localStorage.getItem("vanzwe-role") || "provider";
+  const isCustomer = role === "customer";
   const location = useLocation();
   const navigate = useNavigate();
   const titles = {
@@ -30,12 +34,15 @@ function AppShell() {
     setCurrency(nextProfile.currency);
     localStorage.setItem("vanzwe-profile", JSON.stringify(nextProfile));
   }
+  if (isCustomer && location.pathname !== "/")
+    return <Navigate to="/" replace />;
   return (
     <div className="app-shell">
       <Sidebar
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
         profile={profile}
+        isCustomer={isCustomer}
       />
       <main className="main-content">
         <AppHeader
@@ -46,9 +53,10 @@ function AppShell() {
           }
           onOpenMenu={() => setMobileOpen(true)}
           onRecordSale={() => navigate("/sales/new")}
+          isCustomer={isCustomer}
         />
         <div className="page-content">
-          <Outlet context={{ currency, profile, saveProfile }} />
+          <Outlet context={{ currency, profile, saveProfile, role }} />
         </div>
       </main>
     </div>

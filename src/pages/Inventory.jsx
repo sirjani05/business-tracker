@@ -11,6 +11,7 @@ function Inventory() {
     quantity: 0,
     threshold: 5,
     supplier: "",
+    price: "",
   });
   const [saved, setSaved] = useState(false);
   function updateField(event) {
@@ -24,11 +25,12 @@ function Inventory() {
       ...form,
       quantity: Number(form.quantity),
       threshold: Number(form.threshold),
+      price: Number(form.price || 0),
     };
     const nextItems = [item, ...items].slice(0, 30);
     setItems(nextItems);
     localStorage.setItem("vanzwe-inventory", JSON.stringify(nextItems));
-    setForm({ name: "", quantity: 0, threshold: 5, supplier: "" });
+    setForm({ name: "", quantity: 0, threshold: 5, supplier: "", price: "" });
     setSaved(true);
   }
   return (

@@ -149,6 +149,8 @@ function Signup() {
       profile,
     });
     localStorage.setItem("vanzwe-profile", JSON.stringify(profile));
+    if (role === "provider")
+      localStorage.setItem("vanzwe-provider-profile", JSON.stringify(profile));
     localStorage.setItem("vanzwe-authenticated", "true");
     localStorage.setItem("vanzwe-role", role);
     navigate(location.state?.from?.pathname || "/", { replace: true });

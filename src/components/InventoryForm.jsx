@@ -47,6 +47,18 @@ function InventoryForm({ form, saved, onChange, onSubmit }) {
         </label>
       </div>
       <label>
+        Selling price (USD) <span className="optional">optional</span>
+        <input
+          name="price"
+          type="number"
+          min="0"
+          step="0.01"
+          value={form.price}
+          onChange={onChange}
+          placeholder="0.00"
+        />
+      </label>
+      <label>
         Supplier <span className="optional">optional</span>
         <input
           name="supplier"

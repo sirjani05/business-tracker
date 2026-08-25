@@ -23,7 +23,7 @@ const navItems = [
   { label: "Analytics", to: "/analytics", icon: BarChart3 },
 ];
 
-function Sidebar({ open, onClose, profile }) {
+function Sidebar({ open, onClose, profile, isCustomer }) {
   const [workspaceModalOpen, setWorkspaceModalOpen] = useState(false);
   const initials = profile.ownerName
     .split(" ")
@@ -72,7 +72,10 @@ function Sidebar({ open, onClose, profile }) {
       </div>
       <nav>
         <small className="nav-label">WORKSPACE</small>
-        {navItems.map(({ label, to, icon: Icon, badge }) => (
+        {(isCustomer
+          ? [{ label: "Browse products", to: "/", icon: ShoppingCart }]
+          : navItems
+        ).map(({ label, to, icon: Icon, badge }) => (
           <NavLink
             key={to}
             to={to}
@@ -103,7 +106,7 @@ function Sidebar({ open, onClose, profile }) {
             </div>
             <div>
               <strong>{profile.ownerName}</strong>
-              <small>Owner account</small>
+              <small>{isCustomer ? "Customer account" : "Owner account"}</small>
             </div>
           </NavLink>
           <button

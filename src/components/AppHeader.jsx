@@ -8,6 +8,7 @@ function AppHeader({
   onCurrencyChange,
   onOpenMenu,
   onRecordSale,
+  isCustomer,
 }) {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   return (
@@ -40,12 +41,17 @@ function AppHeader({
             <i />
           </button>
           {notificationsOpen && (
-            <NotificationPanel onClose={() => setNotificationsOpen(false)} />
+            <NotificationPanel
+              isCustomer={isCustomer}
+              onClose={() => setNotificationsOpen(false)}
+            />
           )}
         </div>
-        <button className="primary-button" onClick={onRecordSale}>
-          <Plus size={17} /> Record sale
-        </button>
+        {!isCustomer && (
+          <button className="primary-button" onClick={onRecordSale}>
+            <Plus size={17} /> Record sale
+          </button>
+        )}
       </div>
     </header>
   );
