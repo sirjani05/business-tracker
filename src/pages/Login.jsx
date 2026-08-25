@@ -9,7 +9,8 @@ import {
   UserRound,
 } from "lucide-react";
 import { FaGoogle, FaWhatsapp } from "react-icons/fa6";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { findAccount, getAccounts, saveAccount } from "../data/accounts";
 
 const customerDefaults = {
   username: "",
@@ -34,7 +35,7 @@ const providerDefaults = {
   email: "",
 };
 
-function Login() {
+function Signup() {
   const [role, setRole] = useState("provider");
   const [customer, setCustomer] = useState(customerDefaults);
   const [provider, setProvider] = useState(providerDefaults);
@@ -126,6 +127,27 @@ function Login() {
           currency: "USD",
           role,
         };
+    const normalizedUsername = form.username.trim().toLowerCase();
+    const duplicate = getAccounts().some(
+      (account) =>
+        account.username.toLowerCase() === normalizedUsername ||
+        account.phone.replace(/\s/g, "") ===
+          form.phone.trim().replace(/\s/g, ""),
+    );
+    if (duplicate) {
+      setError(
+        "An account with this username or phone number already exists. Log in instead.",
+      );
+      return;
+    }
+    saveAccount({
+      id: Date.now(),
+      role,
+      username: form.username.trim(),
+      phone: form.phone.trim(),
+      secret: isCustomer ? form.pin : form.password,
+      profile,
+    });
     localStorage.setItem("vanzwe-profile", JSON.stringify(profile));
     localStorage.setItem("vanzwe-authenticated", "true");
     localStorage.setItem("vanzwe-role", role);
@@ -419,4 +441,134 @@ function Login() {
   );
 }
 
-export default Login;
+export function Login() {
+  const [role, setRole] = useState("provider");
+  const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
+  const [secret, setSecret] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  function submit(event) {
+    event.preventDefault();
+    const account = findAccount({ role, username, phone, secret });
+    if (!account) {
+      setError("We could not find an account with those details.");
+      return;
+    }
+    localStorage.setItem("vanzwe-profile", JSON.stringify(account.profile));
+    localStorage.setItem("vanzwe-authenticated", "true");
+    localStorage.setItem("vanzwe-role", account.role);
+    navigate(location.state?.from?.pathname || "/", { replace: true });
+  }
+  return (
+    <section className="auth-card">
+      <div className="auth-icon">
+        <LockKeyhole size={21} />
+      </div>
+      <p className="modal-eyebrow">WELCOME BACK</p>
+      <h1>Log in to your account</h1>
+      <p className="auth-copy">
+        Use the username and credentials you created for your Vamwe Biz OS
+        account.
+      </p>
+      <div className="role-switcher" role="tablist" aria-label="Account type">
+        <button
+          type="button"
+          className={role === "provider" ? "role-tab active" : "role-tab"}
+          onClick={() => {
+            setRole("provider");
+            setError("");
+          }}
+          role="tab"
+          aria-selected={role === "provider"}
+        >
+          <BriefcaseBusiness size={15} /> Service provider
+        </button>
+        <button
+          type="button"
+          className={role === "customer" ? "role-tab active" : "role-tab"}
+          onClick={() => {
+            setRole("customer");
+            setError("");
+          }}
+          role="tab"
+          aria-selected={role === "customer"}
+        >
+          <UserRound size={15} /> Customer
+        </button>
+      </div>
+      <form onSubmit={submit} className="auth-form">
+        <label>
+          Username
+          <input
+            value={username}
+            onChange={(event) => {
+              setUsername(event.target.value);
+              setError("");
+            }}
+            placeholder={
+              role === "customer" ? "e.g. rudo_moyo" : "e.g. Tendai Moyo"
+            }
+            required
+          />
+        </label>
+        <label>
+          Phone number
+          <div className="input-with-icon">
+            <Phone size={15} />
+            <input
+              value={phone}
+              onChange={(event) => {
+                setPhone(event.target.value);
+                setError("");
+              }}
+              placeholder="+263 77 000 0000"
+              required
+            />
+          </div>
+        </label>
+        <label>
+          {role === "customer" ? "PIN" : "Password"}
+          <input
+            type="password"
+            inputMode={role === "customer" ? "numeric" : undefined}
+            value={secret}
+            onChange={(event) => {
+              setSecret(event.target.value);
+              setError("");
+            }}
+            placeholder={
+              role === "customer" ? "Your 4-digit PIN" : "Your password"
+            }
+            required
+          />
+        </label>
+        {error && (
+          <p className="auth-error" role="alert">
+            {error}
+          </p>
+        )}
+        <button className="primary-button" type="submit">
+          Log in <ArrowRight size={16} />
+        </button>
+      </form>
+      <NavLink className="auth-signup-link" to="/signup">
+        New here? Create an account
+      </NavLink>
+      <a
+        className="auth-support"
+        href="https://wa.me/263718009932"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <FaWhatsapp size={15} /> Need help? Chat on WhatsApp
+      </a>
+      <small className="auth-note">
+        Your credentials are checked against accounts on this device.
+      </small>
+    </section>
+  );
+}
+
+export default Signup;

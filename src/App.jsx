@@ -9,7 +9,8 @@ import AppShell from "./components/AppShell";
 import AuthLayout from "./components/AuthLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
+import { Login } from "./pages/Login";
+import Signup from "./pages/Signup";
 import VerifyPin from "./pages/VerifyPin";
 import Sales from "./pages/Sales";
 import Credit from "./pages/Credit";
@@ -26,6 +27,7 @@ function App() {
       <Routes>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/verify-pin" element={<VerifyPin />} />
           <Route path="/404" element={<NotFound />} />
         </Route>

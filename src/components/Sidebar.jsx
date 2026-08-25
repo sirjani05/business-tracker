@@ -50,7 +50,13 @@ function Sidebar({ open, onClose, profile }) {
         </button>
       </div>
       <div className="workspace">
-        <div className="workspace-avatar">{initials}</div>
+        <div className="workspace-avatar">
+          {profile.profileImage ? (
+            <img src={profile.profileImage} alt="" />
+          ) : (
+            initials
+          )}
+        </div>
         <div>
           <strong>{profile.businessName}</strong>
           <small>{profile.location}</small>
@@ -88,7 +94,13 @@ function Sidebar({ open, onClose, profile }) {
         </NavLink>
         <div className="user-row-wrap">
           <NavLink to="/settings" className="user-row" onClick={onClose}>
-            <div className="avatar">{initials}</div>
+            <div className="avatar">
+              {profile.profileImage ? (
+                <img src={profile.profileImage} alt="" />
+              ) : (
+                initials
+              )}
+            </div>
             <div>
               <strong>{profile.ownerName}</strong>
               <small>Owner account</small>

@@ -21,12 +21,19 @@ function Settings({ profile, onSave }) {
       <div className="settings-layout">
         <section className="settings-intro">
           <div className="settings-profile-avatar">
-            {profile.ownerName
-              .split(" ")
-              .map((part) => part[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase()}
+            {profile.profileImage ? (
+              <img
+                src={profile.profileImage}
+                alt={`${profile.ownerName} profile`}
+              />
+            ) : (
+              profile.ownerName
+                .split(" ")
+                .map((part) => part[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()
+            )}
           </div>
           <h3>{profile.ownerName}</h3>
           <p>{profile.businessName}</p>
