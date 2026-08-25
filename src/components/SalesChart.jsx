@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatCompactCurrency, formatCurrency } from "../data/currency";
 
 const salesData = [
   { day: "Mon", sales: 1200 },
@@ -20,7 +21,6 @@ const salesData = [
 ];
 
 function SalesChart({ currency }) {
-  const symbol = currency === "USD" ? "$" : "ZiG ";
   return (
     <section className="panel chart-panel">
       <div className="panel-heading">
@@ -38,7 +38,7 @@ function SalesChart({ currency }) {
           Sales
         </span>
         <strong>
-          {symbol}14,380.50 <small>+18.2%</small>
+          {formatCurrency(14380.5, currency)} <small>+18.2%</small>
         </strong>
       </div>
       <div className="chart-wrap">
@@ -69,7 +69,7 @@ function SalesChart({ currency }) {
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#a39a91", fontSize: 11 }}
-              tickFormatter={(value) => `$${value / 1000}k`}
+              tickFormatter={(value) => formatCompactCurrency(value, currency)}
             />
             <Tooltip
               contentStyle={{
@@ -77,7 +77,7 @@ function SalesChart({ currency }) {
                 borderRadius: 8,
                 boxShadow: "0 8px 24px #382c2118",
               }}
-              formatter={(value) => [`$${value.toLocaleString()}`, "Sales"]}
+              formatter={(value) => [formatCurrency(value, currency), "Sales"]}
             />
             <Area
               type="monotone"

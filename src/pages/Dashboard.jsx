@@ -12,10 +12,10 @@ import DebtWatchlist from "../components/DebtWatchlist";
 import Metric from "../components/Metric";
 import QuickAction from "../components/QuickAction";
 import SalesChart from "../components/SalesChart";
+import { formatCurrency } from "../data/currency";
 
 function Dashboard({ currency }) {
   const navigate = useNavigate();
-  const symbol = currency === "USD" ? "$" : "ZiG ";
   return (
     <div className="dashboard">
       <section className="welcome-row">
@@ -33,7 +33,7 @@ function Dashboard({ currency }) {
       <section className="metric-grid">
         <Metric
           label="Total sales"
-          value={`${symbol}4,280.50`}
+          value={formatCurrency(4280.5, currency)}
           change="+12.8%"
           note="vs. last week"
           icon={Wallet}
@@ -41,7 +41,7 @@ function Dashboard({ currency }) {
         />
         <Metric
           label="Money owed to you"
-          value={`${symbol}2,145.00`}
+          value={formatCurrency(2145, currency)}
           change="8 people"
           note="need your attention"
           icon={Users}
@@ -49,7 +49,7 @@ function Dashboard({ currency }) {
         />
         <Metric
           label="Estimated profit"
-          value={`${symbol}1,682.40`}
+          value={formatCurrency(1682.4, currency)}
           change="+8.4%"
           note="this month"
           icon={CircleDollarSign}

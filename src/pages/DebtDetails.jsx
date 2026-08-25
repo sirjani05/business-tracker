@@ -6,8 +6,9 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import { formatCurrency } from "../data/currency";
 
-function DebtDetails() {
+function DebtDetails({ currency = "USD" }) {
   const { id } = useParams();
   const entries = JSON.parse(localStorage.getItem("vanzwe-credit") || "[]");
   const entry = entries.find((item) => String(item.id) === id) || entries[0];
@@ -42,7 +43,7 @@ function DebtDetails() {
           <h2>{entry.customer}</h2>
           <p>{entry.description || "Credit sale"}</p>
         </div>
-        <strong>${entry.amount.toFixed(2)}</strong>
+        <strong>{formatCurrency(entry.amount, currency)}</strong>
       </section>
       <div className="detail-grid">
         <section className="panel">

@@ -32,8 +32,8 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppShell />}>
             <Route path="/" element={<DashboardRoute />} />
-            <Route path="/debts" element={<Credit />} />
-            <Route path="/debts/:id" element={<DebtDetails />} />
+            <Route path="/debts" element={<CreditRoute />} />
+            <Route path="/debts/:id" element={<DebtDetailsRoute />} />
             <Route path="/sales/new" element={<SalesRoute />} />
             <Route path="/settings" element={<SettingsRoute />} />
             <Route path="/inventory" element={<Inventory />} />
@@ -62,6 +62,14 @@ function SalesRoute() {
 function AnalyticsRoute() {
   const { currency } = useOutletContext();
   return <Analytics currency={currency} />;
+}
+function CreditRoute() {
+  const { currency } = useOutletContext();
+  return <Credit currency={currency} />;
+}
+function DebtDetailsRoute() {
+  const { currency } = useOutletContext();
+  return <DebtDetails currency={currency} />;
 }
 function SettingsRoute() {
   const { profile, saveProfile } = useOutletContext();

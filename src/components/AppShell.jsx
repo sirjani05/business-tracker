@@ -5,11 +5,11 @@ import Sidebar from "./Sidebar";
 import { defaultProfile } from "../data/profile";
 
 function AppShell() {
-  const [currency, setCurrency] = useState("USD");
   const [profile, setProfile] = useState(() => ({
     ...defaultProfile,
     ...JSON.parse(localStorage.getItem("vanzwe-profile") || "{}"),
   }));
+  const [currency, setCurrency] = useState(profile.currency || "USD");
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { CreditCard, Plus } from "lucide-react";
 
-function CreditForm({ form, saved, onChange, onSubmit }) {
+function CreditForm({ currency, form, saved, onChange, onSubmit }) {
   return (
     <form className="panel entry-form" onSubmit={onSubmit}>
       <div className="panel-heading">
@@ -31,7 +31,7 @@ function CreditForm({ form, saved, onChange, onSubmit }) {
       </label>
       <div className="form-row">
         <label>
-          Amount owed (USD)
+          Amount owed ({currency})
           <input
             name="amount"
             type="number"

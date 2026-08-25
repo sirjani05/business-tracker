@@ -1,6 +1,7 @@
 import { ArrowUpRight, CreditCard } from "lucide-react";
+import { formatCurrency } from "../data/currency";
 
-function CreditList({ entries }) {
+function CreditList({ entries, currency }) {
   return (
     <section className="panel recent-sales">
       <div className="panel-heading">
@@ -35,7 +36,7 @@ function CreditList({ entries }) {
                 </small>
               </div>
               <div className="debt-amount">
-                <strong>${entry.amount.toFixed(2)}</strong>
+                <strong>{formatCurrency(entry.amount, currency)}</strong>
                 <button aria-label={`Remind ${entry.customer}`}>
                   <ArrowUpRight size={14} />
                 </button>

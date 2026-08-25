@@ -1,7 +1,7 @@
 import { ReceiptText, ShoppingCart } from "lucide-react";
+import { formatCurrency } from "../data/currency";
 
 function RecentSales({ sales, currency }) {
-  const symbol = currency === "USD" ? "$" : "ZiG ";
   return (
     <section className="panel recent-sales">
       <div className="panel-heading">
@@ -31,10 +31,7 @@ function RecentSales({ sales, currency }) {
                   {sale.createdAt}
                 </small>
               </div>
-              <strong>
-                {symbol}
-                {sale.total.toFixed(2)}
-              </strong>
+              <strong>{formatCurrency(sale.total, currency)}</strong>
             </div>
           ))}
         </div>

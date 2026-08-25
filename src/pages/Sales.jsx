@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SaleForm from "../components/SaleForm";
 import RecentSales from "../components/RecentSales";
+import { ZIG_PER_USD } from "../data/currency";
 
 function Sales({ currency }) {
   const [sales, setSales] = useState(() =>
@@ -30,7 +31,11 @@ function Sales({ currency }) {
       ...form,
       quantity,
       price,
-      total: quantity * price,
+      total:
+        currency === "ZiG"
+          ? (quantity * price) / ZIG_PER_USD
+          : quantity * price,
+      currency: "USD",
       createdAt: new Date().toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import CreditForm from "../components/CreditForm";
 import CreditList from "../components/CreditList";
+import { ZIG_PER_USD } from "../data/currency";
 
-function Credit() {
+function Credit({ currency }) {
   const [entries, setEntries] = useState(() =>
     JSON.parse(localStorage.getItem("vanzwe-credit") || "[]"),
   );
@@ -19,7 +20,13 @@ function Credit() {
   }
   function saveEntry(event) {
     event.preventDefault();
-    const entry = { id: Date.now(), ...form, amount: Number(form.amount) };
+    const amount = Number(form.amount);
+    const entry = {
+      id: Date.now(),
+      ...form,
+      amount: currency === "ZiG" ? amount / ZIG_PER_USD : amount,
+      currency: "USD",
+    };
     const nextEntries = [entry, ...entries].slice(0, 30);
     setEntries(nextEntries);
     localStorage.setItem("vanzwe-credit", JSON.stringify(nextEntries));
@@ -40,12 +47,13 @@ function Credit() {
       </section>
       <div className="sales-layout">
         <CreditForm
+          currency={currency}
           form={form}
           saved={saved}
           onChange={updateField}
           onSubmit={saveEntry}
         />
-        <CreditList entries={entries} />
+        <CreditList entries={entries} currency={currency} />
       </div>
     </div>
   );

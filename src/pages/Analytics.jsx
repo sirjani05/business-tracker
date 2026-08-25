@@ -17,6 +17,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatCurrency } from "../data/currency";
 
 function readRecords(key) {
   try {
@@ -31,7 +32,6 @@ function Analytics({ currency }) {
   const sales = readRecords("vanzwe-sales");
   const credit = readRecords("vanzwe-credit");
   const inventory = readRecords("vanzwe-inventory");
-  const symbol = currency === "USD" ? "$" : "ZiG ";
   const stats = useMemo(() => {
     const revenue = sales.reduce(
       (sum, sale) => sum + Number(sale.total || 0),
@@ -77,13 +77,13 @@ function Analytics({ currency }) {
   function exportCsv() {
     const rows = [
       ["Report", "Value"],
-      ["Revenue", stats.revenue.toFixed(2)],
-      ["Outstanding credit", stats.owed.toFixed(2)],
+      ["Revenue", formatCurrency(stats.revenue, currency)],
+      ["Outstanding credit", formatCurrency(stats.owed, currency)],
       ["Inventory items", inventory.length],
       ["Low stock items", stats.lowStock],
       ...Object.entries(stats.methods).map(([method, total]) => [
         `Sales via ${method}`,
-        total.toFixed(2),
+        formatCurrency(total, currency),
       ]),
     ];
     const csv = rows
@@ -130,21 +130,21 @@ function Analytics({ currency }) {
       <section className="analytics-stat-grid">
         <AnalyticsStat
           label="Revenue recorded"
-          value={`${symbol}${stats.revenue.toFixed(2)}`}
+          value={formatCurrency(stats.revenue, currency)}
           detail={`${sales.length} sale${sales.length === 1 ? "" : "s"} logged`}
           icon={Wallet}
           tone="peach"
         />
         <AnalyticsStat
           label="Outstanding credit"
-          value={`${symbol}${stats.owed.toFixed(2)}`}
+          value={formatCurrency(stats.owed, currency)}
           detail={`${credit.length} open account${credit.length === 1 ? "" : "s"}`}
           icon={FileText}
           tone="lilac"
         />
         <AnalyticsStat
           label="Average per day"
-          value={`${symbol}${stats.average.toFixed(2)}`}
+          value={formatCurrency(stats.average, currency)}
           detail={`Across the last ${period} days`}
           icon={BarChart3}
           tone="mint"
@@ -165,8 +165,7 @@ function Analytics({ currency }) {
               <p>Recorded sales by day</p>
             </div>
             <span className="chart-total">
-              {symbol}
-              {stats.revenue.toFixed(2)}
+              {formatCurrency(stats.revenue, currency)}
             </span>
           </div>
           <div className="analytics-chart-wrap">
@@ -207,12 +206,12 @@ function Analytics({ currency }) {
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: "#a39a91", fontSize: 10 }}
-                  tickFormatter={(value) => `${symbol}${value}`}
+                  tickFormatter={(value) => formatCurrency(value, currency)}
                 />
                 <Tooltip
                   contentStyle={{ border: "0", borderRadius: 8 }}
                   formatter={(value) => [
-                    `${symbol}${value.toFixed(2)}`,
+                    formatCurrency(value, currency),
                     "Revenue",
                   ]}
                 />
@@ -256,10 +255,7 @@ function Analytics({ currency }) {
                         : "s"}
                     </small>
                   </div>
-                  <strong>
-                    {symbol}
-                    {total.toFixed(2)}
-                  </strong>
+                  <strong>{formatCurrency(total, currency)}</strong>
                   <ArrowUpRight size={15} />
                 </div>
               ))}
