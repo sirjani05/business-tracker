@@ -14,7 +14,7 @@ function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
   const titles = {
-    "/": "Good morning, Tendai",
+    "/": `Welcome, ${profile.ownerName}, to ${profile.businessName}`,
     "/sales/new": "Sales",
     "/debts": "Chikwereti",
     "/debts/:id": "Debt details",
@@ -22,7 +22,9 @@ function AppShell() {
     "/analytics": "Analytics",
     "/settings": "Settings",
   };
-  const pageTitle = titles[location.pathname] || "Vamwe Biz OS";
+  const pageTitle = location.pathname.startsWith("/debts/")
+    ? "Debt details"
+    : titles[location.pathname] || "Vamwe Biz OS";
   function saveProfile(nextProfile) {
     setProfile(nextProfile);
     setCurrency(nextProfile.currency);
