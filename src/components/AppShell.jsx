@@ -14,7 +14,7 @@ function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
   const titles = {
-    "/": `Welcome, ${profile.ownerName}, to ${profile.businessName}`,
+    "/": `Welcome ${profile.ownerName}, to Vamwe Biz OS`,
     "/sales/new": "Sales",
     "/debts": "Chikwereti",
     "/debts/:id": "Debt details",
