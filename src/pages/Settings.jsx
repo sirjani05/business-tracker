@@ -1,10 +1,11 @@
 import { useState } from "react";
+import CustomerSettingsForm from "../components/CustomerSettingsForm";
 import SettingsForm from "../components/SettingsForm";
 
-function Settings({ profile, onSave }) {
+function Settings({ profile, onSave, role }) {
   const [saved, setSaved] = useState(false);
   function saveProfile(nextProfile) {
-    onSave(nextProfile);
+    onSave({ ...profile, ...nextProfile, role });
     setSaved(true);
   }
   return (
@@ -12,7 +13,11 @@ function Settings({ profile, onSave }) {
       <section className="welcome-row">
         <div>
           <h2>Settings</h2>
-          <p>Make Vamwe Biz OS feel like your business.</p>
+          <p>
+            {role === "customer"
+              ? "Keep your personal details ready for local providers."
+              : "Make Vamwe Biz OS feel like your business."}
+          </p>
         </div>
         <div className="settings-status">
           <span className="status-dot" /> Offline-first
@@ -39,7 +44,14 @@ function Settings({ profile, onSave }) {
           <p>{profile.businessName}</p>
           <small>Your information stays on this device.</small>
         </section>
-        <SettingsForm profile={{ ...profile, saved }} onSave={saveProfile} />
+        {role === "customer" ? (
+          <CustomerSettingsForm
+            profile={{ ...profile, saved }}
+            onSave={saveProfile}
+          />
+        ) : (
+          <SettingsForm profile={{ ...profile, saved }} onSave={saveProfile} />
+        )}
       </div>
     </div>
   );

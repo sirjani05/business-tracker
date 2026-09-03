@@ -33,7 +33,11 @@ function AppShell() {
     setCurrency(nextProfile.currency);
     localStorage.setItem("vanzwe-profile", JSON.stringify(nextProfile));
   }
-  if (isCustomer && location.pathname !== "/")
+  if (
+    isCustomer &&
+    location.pathname !== "/" &&
+    location.pathname !== "/settings"
+  )
     return <Navigate to="/" replace />;
   return (
     <div className="app-shell">

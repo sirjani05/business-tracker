@@ -79,8 +79,8 @@ function DebtDetailsRoute() {
   return <DebtDetails currency={currency} />;
 }
 function SettingsRoute() {
-  const { profile, saveProfile } = useOutletContext();
-  return <Settings profile={profile} onSave={saveProfile} />;
+  const { profile, saveProfile, role } = useOutletContext();
+  return <Settings profile={profile} onSave={saveProfile} role={role} />;
 }
 
 export default App;

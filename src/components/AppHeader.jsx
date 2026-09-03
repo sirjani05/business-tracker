@@ -43,6 +43,7 @@ function AppHeader({
           {notificationsOpen && (
             <NotificationPanel
               role={role}
+              currency={currency}
               onClose={() => setNotificationsOpen(false)}
             />
           )}
