@@ -14,6 +14,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { FaWhatsapp } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
 import WorkspaceModal from "./WorkspaceModal";
+import ProfileImageModal from "./ProfileImageModal";
 
 function getCreditCustomerCount() {
   try {
@@ -40,6 +41,7 @@ function Sidebar({ open, onClose, profile, isCustomer }) {
     getCreditCustomerCount,
   );
   const [workspaceModalOpen, setWorkspaceModalOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   const initials = profile.ownerName
     .split(" ")
     .map((part) => part[0])
@@ -72,13 +74,17 @@ function Sidebar({ open, onClose, profile, isCustomer }) {
         </button>
       </div>
       <div className="workspace">
-        <div className="workspace-avatar">
+        <button
+          className="profile-holder workspace-avatar"
+          onClick={() => setProfileModalOpen(true)}
+          aria-label="View profile picture"
+        >
           {profile.profileImage ? (
             <img src={profile.profileImage} alt="" />
           ) : (
             initials
           )}
-        </div>
+        </button>
         <div>
           <strong>{profile.businessName}</strong>
           <small>{profile.location}</small>
@@ -121,13 +127,17 @@ function Sidebar({ open, onClose, profile, isCustomer }) {
         </NavLink>
         <div className="user-row-wrap">
           <NavLink to="/settings" className="user-row" onClick={onClose}>
-            <div className="avatar">
+            <button
+              className="profile-holder avatar"
+              onClick={() => setProfileModalOpen(true)}
+              aria-label="View profile picture"
+            >
               {profile.profileImage ? (
                 <img src={profile.profileImage} alt="" />
               ) : (
                 initials
               )}
-            </div>
+            </button>
             <div>
               <strong>{profile.ownerName}</strong>
               <small>{isCustomer ? "Customer account" : "Owner account"}</small>
@@ -170,6 +180,12 @@ function Sidebar({ open, onClose, profile, isCustomer }) {
         <WorkspaceModal
           profile={profile}
           onClose={() => setWorkspaceModalOpen(false)}
+        />
+      )}
+      {profileModalOpen && (
+        <ProfileImageModal
+          profile={profile}
+          onClose={() => setProfileModalOpen(false)}
         />
       )}
     </aside>

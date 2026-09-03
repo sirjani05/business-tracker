@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import CustomerSettingsForm from "../components/CustomerSettingsForm";
 import SettingsForm from "../components/SettingsForm";
+import ProfileImageModal from "../components/ProfileImageModal";
 
 function Settings({ profile, onSave, role }) {
   const [saved, setSaved] = useState(false);
   const [online, setOnline] = useState(() => navigator.onLine);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   useEffect(() => {
     const updateOnline = () => setOnline(navigator.onLine);
     window.addEventListener("online", updateOnline);
@@ -35,7 +37,11 @@ function Settings({ profile, onSave, role }) {
       </section>
       <div className="settings-layout">
         <section className="settings-intro">
-          <div className="settings-profile-avatar">
+          <button
+            className="profile-holder settings-profile-avatar"
+            onClick={() => setProfileModalOpen(true)}
+            aria-label="View profile picture"
+          >
             {profile.profileImage ? (
               <img
                 src={profile.profileImage}
@@ -49,7 +55,7 @@ function Settings({ profile, onSave, role }) {
                 .slice(0, 2)
                 .toUpperCase()
             )}
-          </div>
+          </button>
           <h3>{profile.ownerName}</h3>
           <p>{profile.businessName}</p>
           <small>Your information stays on this device.</small>
@@ -63,6 +69,12 @@ function Settings({ profile, onSave, role }) {
           <SettingsForm profile={{ ...profile, saved }} onSave={saveProfile} />
         )}
       </div>
+      {profileModalOpen && (
+        <ProfileImageModal
+          profile={profile}
+          onClose={() => setProfileModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
