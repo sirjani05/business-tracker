@@ -1,4 +1,4 @@
-import { Boxes, Plus } from "lucide-react";
+import { Boxes, ImagePlus, Plus } from "lucide-react";
 
 function InventoryForm({ form, saved, onChange, onSubmit }) {
   return (
@@ -19,6 +19,19 @@ function InventoryForm({ form, saved, onChange, onSubmit }) {
           placeholder="e.g. Cooking oil 2L"
           required
         />
+      </label>
+      <label>
+        Product image
+        <div className="file-input">
+          <ImagePlus size={15} />
+          <input
+            name="image"
+            type="file"
+            accept="image/*"
+            onChange={onChange}
+            required
+          />
+        </div>
       </label>
       <div className="form-row">
         <label>
@@ -56,6 +69,16 @@ function InventoryForm({ form, saved, onChange, onSubmit }) {
           value={form.price}
           onChange={onChange}
           placeholder="0.00"
+        />
+      </label>
+      <label>
+        Category
+        <input
+          name="category"
+          value={form.category}
+          onChange={onChange}
+          placeholder="e.g. Groceries"
+          required
         />
       </label>
       <label>

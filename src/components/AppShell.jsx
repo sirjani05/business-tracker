@@ -32,6 +32,12 @@ function AppShell() {
     setProfile(nextProfile);
     setCurrency(nextProfile.currency);
     localStorage.setItem("vanzwe-profile", JSON.stringify(nextProfile));
+    if (role === "provider") {
+      localStorage.setItem(
+        "vanzwe-provider-profile",
+        JSON.stringify({ ...nextProfile, isActive: true }),
+      );
+    }
   }
   if (
     isCustomer &&

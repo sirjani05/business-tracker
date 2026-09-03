@@ -106,6 +106,7 @@ function Signup() {
     const profile = isCustomer
       ? {
           ownerName: form.username,
+          username: form.username,
           businessName: "Vamwe Biz OS",
           location: form.location,
           residence: form.location,
@@ -117,6 +118,7 @@ function Signup() {
         }
       : {
           ownerName: form.username,
+          username: form.username,
           businessName: form.businessName,
           location: form.businessLocation,
           phone: form.phone,
@@ -458,7 +460,13 @@ export function Login() {
       setError("We could not find an account with those details.");
       return;
     }
-    localStorage.setItem("vanzwe-profile", JSON.stringify(account.profile));
+    const profile = { ...account.profile, username: account.username };
+    localStorage.setItem("vanzwe-profile", JSON.stringify(profile));
+    if (account.role === "provider")
+      localStorage.setItem(
+        "vanzwe-provider-profile",
+        JSON.stringify({ ...profile, isActive: true }),
+      );
     localStorage.setItem("vanzwe-authenticated", "true");
     localStorage.setItem("vanzwe-role", account.role);
     navigate(location.state?.from?.pathname || "/", { replace: true });

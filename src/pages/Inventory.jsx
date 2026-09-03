@@ -12,10 +12,20 @@ function Inventory() {
     threshold: 5,
     supplier: "",
     price: "",
+    category: "",
+    image: "",
   });
   const [saved, setSaved] = useState(false);
   function updateField(event) {
-    setForm({ ...form, [event.target.name]: event.target.value });
+    if (event.target.name === "image") {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => setForm({ ...form, image: reader.result });
+      reader.readAsDataURL(file);
+    } else {
+      setForm({ ...form, [event.target.name]: event.target.value });
+    }
     setSaved(false);
   }
   function saveItem(event) {
@@ -30,7 +40,15 @@ function Inventory() {
     const nextItems = [item, ...items].slice(0, 30);
     setItems(nextItems);
     localStorage.setItem("vanzwe-inventory", JSON.stringify(nextItems));
-    setForm({ name: "", quantity: 0, threshold: 5, supplier: "", price: "" });
+    setForm({
+      name: "",
+      quantity: 0,
+      threshold: 5,
+      supplier: "",
+      price: "",
+      category: "",
+      image: "",
+    });
     setSaved(true);
   }
   return (

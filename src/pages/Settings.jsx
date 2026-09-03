@@ -1,9 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomerSettingsForm from "../components/CustomerSettingsForm";
 import SettingsForm from "../components/SettingsForm";
 
 function Settings({ profile, onSave, role }) {
   const [saved, setSaved] = useState(false);
+  const [online, setOnline] = useState(() => navigator.onLine);
+  useEffect(() => {
+    const updateOnline = () => setOnline(navigator.onLine);
+    window.addEventListener("online", updateOnline);
+    window.addEventListener("offline", updateOnline);
+    return () => {
+      window.removeEventListener("online", updateOnline);
+      window.removeEventListener("offline", updateOnline);
+    };
+  }, []);
   function saveProfile(nextProfile) {
     onSave({ ...profile, ...nextProfile, role });
     setSaved(true);
@@ -19,8 +29,8 @@ function Settings({ profile, onSave, role }) {
               : "Make Vamwe Biz OS feel like your business."}
           </p>
         </div>
-        <div className="settings-status">
-          <span className="status-dot" /> Offline-first
+        <div className={`settings-status ${online ? "online" : "offline"}`}>
+          <span className="status-dot" /> {online ? "Online" : "Offline"}
         </div>
       </section>
       <div className="settings-layout">
