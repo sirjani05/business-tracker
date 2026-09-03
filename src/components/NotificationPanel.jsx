@@ -1,9 +1,15 @@
 import { Bell, Check, CircleAlert, Eye, PackageCheck, X } from "lucide-react";
 
-function NotificationPanel({ onClose, isCustomer }) {
-  const interactionCount = JSON.parse(
-    localStorage.getItem("vanzwe-product-interactions") || "[]",
-  ).length;
+function NotificationPanel({ onClose, role }) {
+  const isCustomer = role === "customer";
+  let interactionCount;
+  try {
+    interactionCount = JSON.parse(
+      localStorage.getItem("vanzwe-product-interactions") || "[]",
+    ).length;
+  } catch {
+    interactionCount = 0;
+  }
   return (
     <div
       className="notification-panel"

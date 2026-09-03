@@ -1,5 +1,10 @@
-import { useEffect, useState } from "react";
-import { ArrowUpRight, Search, ShoppingBag } from "lucide-react";
+import { useState } from "react";
+import {
+  ArrowUpRight,
+  Search,
+  ShoppingBag,
+  SlidersHorizontal,
+} from "lucide-react";
 import ProductBrowser from "../components/ProductBrowser";
 
 function readRecords(key, fallback = []) {
@@ -11,14 +16,23 @@ function readRecords(key, fallback = []) {
 }
 
 function CustomerDashboard({ currency, profile }) {
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
-    setProducts(
-      readRecords("vanzwe-inventory").filter(
-        (item) => Number(item.quantity) > 0,
-      ),
-    );
-  }, []);
+  const [products] = useState(() =>
+    readRecords("vanzwe-inventory").filter((item) => Number(item.quantity) > 0),
+  );
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All products");
+  const categories = [
+    "All products",
+    ...new Set(products.map((product) => product.category).filter(Boolean)),
+  ];
+  const visibleProducts = products.filter((product) => {
+    const matchesQuery = `${product.name} ${product.supplier || ""}`
+      .toLowerCase()
+      .includes(query.trim().toLowerCase());
+    const matchesCategory =
+      category === "All products" || product.category === category;
+    return matchesQuery && matchesCategory;
+  });
   function handleInteraction(product, type) {
     const interactions = readRecords("vanzwe-product-interactions");
     interactions.push({
@@ -51,13 +65,32 @@ function CustomerDashboard({ currency, profile }) {
             providers.
           </p>
         </div>
-        <div className="customer-search">
+        <label className="customer-search">
           <Search size={16} />
-          <span>Browse available products</span>
-        </div>
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search products or suppliers"
+            aria-label="Search products or suppliers"
+          />
+        </label>
       </section>
+      <div className="customer-filters" aria-label="Product filters">
+        <SlidersHorizontal size={15} />
+        {categories.map((item) => (
+          <button
+            key={item}
+            className={
+              category === item ? "period-button active" : "period-button"
+            }
+            onClick={() => setCategory(item)}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
       <ProductBrowser
-        products={products}
+        products={visibleProducts}
         provider={readRecords("vanzwe-provider-profile", {
           ownerName: "Tendai's Market",
           businessName: "Tendai's Market",
@@ -66,6 +99,9 @@ function CustomerDashboard({ currency, profile }) {
         currency={currency}
         onInteraction={handleInteraction}
       />
+      {products.length > 0 && visibleProducts.length === 0 && (
+        <p className="customer-filter-empty">No products match your search.</p>
+      )}
       <section className="customer-tip">
         <ShoppingBag size={18} />
         <div>

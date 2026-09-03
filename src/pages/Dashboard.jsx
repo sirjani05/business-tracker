@@ -6,6 +6,7 @@ import {
   Wallet,
   Boxes,
   ReceiptText,
+  Eye,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DebtWatchlist from "../components/DebtWatchlist";
@@ -16,6 +17,19 @@ import { formatCurrency } from "../data/currency";
 
 function Dashboard({ currency }) {
   const navigate = useNavigate();
+  const interactions = (() => {
+    try {
+      return JSON.parse(
+        localStorage.getItem("vanzwe-product-interactions") || "[]",
+      );
+    } catch {
+      return [];
+    }
+  })();
+  const views = interactions.filter((item) => item.type === "view").length;
+  const enquiries = interactions.filter(
+    (item) => item.type === "contact",
+  ).length;
   return (
     <div className="dashboard">
       <section className="welcome-row">
@@ -54,6 +68,14 @@ function Dashboard({ currency }) {
           note="this month"
           icon={CircleDollarSign}
           tone="mint"
+        />
+        <Metric
+          label="Product interest"
+          value={interactions.length}
+          change={`${enquiries} enquiries`}
+          note={`${views} product views`}
+          icon={Eye}
+          tone="amber"
         />
       </section>
       <div className="content-grid">

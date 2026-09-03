@@ -7,6 +7,7 @@ import {
   FileText,
   PackageCheck,
   Wallet,
+  Eye,
 } from "lucide-react";
 import {
   Area,
@@ -32,6 +33,7 @@ function Analytics({ currency }) {
   const sales = readRecords("vanzwe-sales");
   const credit = readRecords("vanzwe-credit");
   const inventory = readRecords("vanzwe-inventory");
+  const interactions = readRecords("vanzwe-product-interactions");
   const stats = useMemo(() => {
     const revenue = sales.reduce(
       (sum, sale) => sum + Number(sale.total || 0),
@@ -49,6 +51,10 @@ function Analytics({ currency }) {
         (result[sale.method] || 0) + Number(sale.total || 0);
       return result;
     }, {});
+    const views = interactions.filter((item) => item.type === "view").length;
+    const enquiries = interactions.filter(
+      (item) => item.type === "contact",
+    ).length;
     const chart = Array.from({ length: period }, (_, index) => {
       const date = new Date();
       date.setDate(date.getDate() - (period - index - 1));
@@ -71,8 +77,10 @@ function Analytics({ currency }) {
       methods,
       chart,
       average: period ? revenue / period : 0,
+      views,
+      enquiries,
     };
-  }, [credit, inventory, period, sales]);
+  }, [credit, inventory, interactions, period, sales]);
 
   function exportCsv() {
     const rows = [
@@ -155,6 +163,13 @@ function Analytics({ currency }) {
           detail={`${inventory.length} total items tracked`}
           icon={PackageCheck}
           tone="amber"
+        />
+        <AnalyticsStat
+          label="Product interactions"
+          value={stats.views + stats.enquiries}
+          detail={`${stats.views} views, ${stats.enquiries} enquiries`}
+          icon={Eye}
+          tone="peach"
         />
       </section>
       <div className="analytics-grid">

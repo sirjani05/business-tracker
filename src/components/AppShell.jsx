@@ -3,7 +3,6 @@ import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import AppHeader from "./AppHeader";
 import Sidebar from "./Sidebar";
 import { defaultProfile } from "../data/profile";
-import CustomerDashboard from "../pages/CustomerDashboard";
 
 function AppShell() {
   const [profile, setProfile] = useState(() => ({
@@ -53,7 +52,7 @@ function AppShell() {
           }
           onOpenMenu={() => setMobileOpen(true)}
           onRecordSale={() => navigate("/sales/new")}
-          isCustomer={isCustomer}
+          role={role}
         />
         <div className="page-content">
           <Outlet context={{ currency, profile, saveProfile, role }} />
