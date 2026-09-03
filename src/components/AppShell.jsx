@@ -63,6 +63,7 @@ function AppShell() {
           onOpenMenu={() => setMobileOpen(true)}
           onRecordSale={() => navigate("/sales/new")}
           role={role}
+          profile={profile}
         />
         <div className="page-content">
           <Outlet context={{ currency, profile, saveProfile, role }} />

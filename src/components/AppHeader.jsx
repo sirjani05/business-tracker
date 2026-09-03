@@ -9,6 +9,7 @@ function AppHeader({
   onOpenMenu,
   onRecordSale,
   role,
+  profile,
 }) {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   return (
@@ -44,6 +45,7 @@ function AppHeader({
             <NotificationPanel
               role={role}
               currency={currency}
+              profile={profile}
               onClose={() => setNotificationsOpen(false)}
             />
           )}

@@ -10,7 +10,12 @@ import {
 } from "lucide-react";
 import { FaGoogle, FaWhatsapp } from "react-icons/fa6";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { findAccount, getAccounts, saveAccount } from "../data/accounts";
+import {
+  findAccount,
+  getAccountProfile,
+  getAccounts,
+  saveAccount,
+} from "../data/accounts";
 
 const customerDefaults = {
   username: "",
@@ -142,20 +147,28 @@ function Signup() {
       );
       return;
     }
-    saveAccount({
-      id: Date.now(),
-      role,
-      username: form.username.trim(),
-      phone: form.phone.trim(),
-      secret: isCustomer ? form.pin : form.password,
-      profile,
-    });
-    localStorage.setItem("vanzwe-profile", JSON.stringify(profile));
-    if (role === "provider")
-      localStorage.setItem("vanzwe-provider-profile", JSON.stringify(profile));
-    localStorage.setItem("vanzwe-authenticated", "true");
-    localStorage.setItem("vanzwe-role", role);
-    navigate(location.state?.from?.pathname || "/", { replace: true });
+    try {
+      const account = saveAccount({
+        id: Date.now(),
+        role,
+        username: form.username.trim(),
+        phone: form.phone.trim(),
+        secret: isCustomer ? form.pin : form.password,
+        profile,
+      });
+      const sessionProfile = getAccountProfile(account);
+      localStorage.setItem("vanzwe-profile", JSON.stringify(sessionProfile));
+      if (role === "provider")
+        localStorage.setItem(
+          "vanzwe-provider-profile",
+          JSON.stringify(sessionProfile),
+        );
+      localStorage.setItem("vanzwe-authenticated", "true");
+      localStorage.setItem("vanzwe-role", role);
+      navigate(location.state?.from?.pathname || "/", { replace: true });
+    } catch (storageError) {
+      setError(storageError.message);
+    }
   }
   return (
     <section className="auth-card">
@@ -460,7 +473,10 @@ export function Login() {
       setError("We could not find an account with those details.");
       return;
     }
-    const profile = { ...account.profile, username: account.username };
+    const profile = {
+      ...getAccountProfile(account),
+      username: account.username,
+    };
     localStorage.setItem("vanzwe-profile", JSON.stringify(profile));
     if (account.role === "provider")
       localStorage.setItem(

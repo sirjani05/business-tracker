@@ -1,7 +1,8 @@
 import { Bell, Check, CircleAlert, Eye, PackageCheck, X } from "lucide-react";
 import { formatCurrency } from "../data/currency";
+import { getCreditBalance, getOverdueWeeks } from "../data/credit";
 
-function NotificationPanel({ onClose, role, currency }) {
+function NotificationPanel({ onClose, role, currency, profile }) {
   const isCustomer = role === "customer";
   let interactionCount;
   try {
@@ -16,6 +17,21 @@ function NotificationPanel({ onClose, role, currency }) {
       return JSON.parse(localStorage.getItem("vanzwe-inventory") || "[]")
         .filter((product) => Number(product.quantity) > 0)
         .slice(0, 3);
+    } catch {
+      return [];
+    }
+  })();
+  const customerCredits = (() => {
+    if (!isCustomer) return [];
+    const names = new Set(
+      [profile?.ownerName, profile?.username]
+        .filter(Boolean)
+        .map((name) => name.trim().toLowerCase()),
+    );
+    try {
+      return JSON.parse(localStorage.getItem("vanzwe-credit") || "[]").filter(
+        (entry) => names.has(entry.customer?.trim().toLowerCase()),
+      );
     } catch {
       return [];
     }
@@ -79,6 +95,48 @@ function NotificationPanel({ onClose, role, currency }) {
 
       {isCustomer && (
         <>
+          {customerCredits.length > 0 ? (
+            customerCredits.map((entry) => {
+              const overdueWeeks = getOverdueWeeks(entry);
+              const balance = getCreditBalance(entry);
+              return (
+                <div className="notification-item" key={entry.id}>
+                  <span
+                    className={`notification-item-icon ${overdueWeeks ? "warning" : "done"}`}
+                  >
+                    {overdueWeeks ? (
+                      <CircleAlert size={16} />
+                    ) : (
+                      <Check size={16} />
+                    )}
+                  </span>
+                  <div>
+                    <strong>
+                      {overdueWeeks
+                        ? "Credit payment overdue"
+                        : "Credit payment reminder"}
+                    </strong>
+                    <small>
+                      {formatCurrency(balance, currency)} due {entry.dueDate}.
+                      {overdueWeeks
+                        ? ` Payment is ${overdueWeeks} week${overdueWeeks === 1 ? "" : "s"} late; 10% is added after each completed week.`
+                        : " Please pay by the due date to avoid the 10% weekly late fee."}
+                    </small>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="notification-item">
+              <span className="notification-item-icon done">
+                <Check size={16} />
+              </span>
+              <div>
+                <strong>No outstanding credit</strong>
+                <small>Your credit payments are up to date.</small>
+              </div>
+            </div>
+          )}
           <div className="notification-item">
             <span className="notification-item-icon done">
               <Check size={16} />
