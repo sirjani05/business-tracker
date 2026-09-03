@@ -25,13 +25,21 @@ function Credit({ currency }) {
       id: Date.now(),
       ...form,
       amount: currency === "ZiG" ? amount / ZIG_PER_USD : amount,
+      originalAmount: currency === "ZiG" ? amount / ZIG_PER_USD : amount,
       currency: "USD",
     };
     const nextEntries = [entry, ...entries].slice(0, 30);
     setEntries(nextEntries);
     localStorage.setItem("vanzwe-credit", JSON.stringify(nextEntries));
+    window.dispatchEvent(new Event("vanzwe-credit-updated"));
     setForm({ customer: "", description: "", amount: "", dueDate: "" });
     setSaved(true);
+  }
+  function markPaid(entryId) {
+    const nextEntries = entries.filter((entry) => entry.id !== entryId);
+    setEntries(nextEntries);
+    localStorage.setItem("vanzwe-credit", JSON.stringify(nextEntries));
+    window.dispatchEvent(new Event("vanzwe-credit-updated"));
   }
   return (
     <div className="entry-page">
@@ -53,7 +61,7 @@ function Credit({ currency }) {
           onChange={updateField}
           onSubmit={saveEntry}
         />
-        <CreditList entries={entries} currency={currency} />
+        <CreditList entries={entries} currency={currency} onPaid={markPaid} />
       </div>
     </div>
   );

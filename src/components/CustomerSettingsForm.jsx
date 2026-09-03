@@ -1,4 +1,4 @@
-import { Camera, Check, Mail, Phone, Save, UserRound } from "lucide-react";
+import { Camera, Check, Mail, Phone, Save, UserRound, X } from "lucide-react";
 import { useState } from "react";
 
 function CustomerSettingsForm({ profile, onSave }) {
@@ -48,6 +48,17 @@ function CustomerSettingsForm({ profile, onSave }) {
                 accept="image/*"
                 onChange={updateImage}
               />
+              {profileImage && (
+                <button
+                  type="button"
+                  className="profile-image-remove"
+                  onClick={() => setProfileImage("")}
+                  aria-label="Remove profile picture"
+                  title="Remove profile picture"
+                >
+                  <X size={14} />
+                </button>
+              )}
             </div>
           </label>
           <label>

@@ -1,7 +1,8 @@
-import { ArrowUpRight, CreditCard } from "lucide-react";
+import { ArrowUpRight, Check, CreditCard } from "lucide-react";
 import { formatCurrency } from "../data/currency";
+import { getCreditBalance, getOverdueWeeks } from "../data/credit";
 
-function CreditList({ entries, currency }) {
+function CreditList({ entries, currency, onPaid }) {
   return (
     <section className="panel recent-sales">
       <div className="panel-heading">
@@ -36,9 +37,22 @@ function CreditList({ entries, currency }) {
                 </small>
               </div>
               <div className="debt-amount">
-                <strong>{formatCurrency(entry.amount, currency)}</strong>
+                <strong>
+                  {formatCurrency(getCreditBalance(entry), currency)}
+                </strong>
+                {getOverdueWeeks(entry) > 0 && (
+                  <small className="overdue-note">
+                    +10% · week {getOverdueWeeks(entry)}
+                  </small>
+                )}
                 <button aria-label={`Remind ${entry.customer}`}>
                   <ArrowUpRight size={14} />
+                </button>
+                <button
+                  className="paid-button"
+                  onClick={() => onPaid(entry.id)}
+                >
+                  <Check size={13} /> Paid
                 </button>
               </div>
             </div>

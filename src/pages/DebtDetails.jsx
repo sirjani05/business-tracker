@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { formatCurrency } from "../data/currency";
+import { getCreditBalance, getOverdueWeeks } from "../data/credit";
 
 function DebtDetails({ currency = "USD" }) {
   const { id } = useParams();
@@ -43,7 +44,7 @@ function DebtDetails({ currency = "USD" }) {
           <h2>{entry.customer}</h2>
           <p>{entry.description || "Credit sale"}</p>
         </div>
-        <strong>{formatCurrency(entry.amount, currency)}</strong>
+        <strong>{formatCurrency(getCreditBalance(entry), currency)}</strong>
       </section>
       <div className="detail-grid">
         <section className="panel">
@@ -61,6 +62,11 @@ function DebtDetails({ currency = "USD" }) {
             <span>
               <CreditCard size={15} /> Open balance
             </span>
+            {getOverdueWeeks(entry) > 0 && (
+              <span className="overdue-note">
+                10% added each completed overdue week ({getOverdueWeeks(entry)})
+              </span>
+            )}
           </div>
           <a
             className="primary-button"

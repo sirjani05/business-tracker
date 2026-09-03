@@ -9,21 +9,36 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { FaWhatsapp } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
 import WorkspaceModal from "./WorkspaceModal";
 
+function getCreditCustomerCount() {
+  try {
+    return new Set(
+      JSON.parse(localStorage.getItem("vanzwe-credit") || "[]")
+        .map((entry) => entry.customer?.trim().toLowerCase())
+        .filter(Boolean),
+    ).size;
+  } catch {
+    return 0;
+  }
+}
+
 const navItems = [
   { label: "Overview", to: "/", icon: LayoutDashboard },
   { label: "Sales", to: "/sales/new", icon: ShoppingCart },
-  { label: "Chikwereti", to: "/debts", icon: CreditCard, badge: "8" },
+  { label: "Chikwereti", to: "/debts", icon: CreditCard },
   { label: "Inventory", to: "/inventory", icon: Boxes },
   { label: "Analytics", to: "/analytics", icon: BarChart3 },
 ];
 
 function Sidebar({ open, onClose, profile, isCustomer }) {
+  const [creditCustomerCount, setCreditCustomerCount] = useState(
+    getCreditCustomerCount,
+  );
   const [workspaceModalOpen, setWorkspaceModalOpen] = useState(false);
   const initials = profile.ownerName
     .split(" ")
@@ -32,6 +47,13 @@ function Sidebar({ open, onClose, profile, isCustomer }) {
     .slice(0, 2)
     .toUpperCase();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  useEffect(() => {
+    const refreshCreditCount = () =>
+      setCreditCustomerCount(getCreditCustomerCount());
+    window.addEventListener("vanzwe-credit-updated", refreshCreditCount);
+    return () =>
+      window.removeEventListener("vanzwe-credit-updated", refreshCreditCount);
+  }, []);
   return (
     <aside className={`sidebar ${open ? "is-open" : ""}`}>
       <div className="brand">
@@ -75,7 +97,7 @@ function Sidebar({ open, onClose, profile, isCustomer }) {
         {(isCustomer
           ? [{ label: "Browse products", to: "/", icon: ShoppingCart }]
           : navItems
-        ).map(({ label, to, icon: Icon, badge }) => (
+        ).map(({ label, to, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
@@ -86,7 +108,9 @@ function Sidebar({ open, onClose, profile, isCustomer }) {
           >
             <Icon size={19} />
             <span>{label}</span>
-            {badge && <em>{badge}</em>}
+            {!isCustomer && to === "/debts" && creditCustomerCount > 0 && (
+              <em>{creditCustomerCount}</em>
+            )}
           </NavLink>
         ))}
       </nav>

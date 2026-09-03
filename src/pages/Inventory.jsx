@@ -51,6 +51,11 @@ function Inventory() {
     });
     setSaved(true);
   }
+  function deleteItem(itemId) {
+    const nextItems = items.filter((item) => item.id !== itemId);
+    setItems(nextItems);
+    localStorage.setItem("vanzwe-inventory", JSON.stringify(nextItems));
+  }
   return (
     <div className="entry-page">
       <section className="welcome-row">
@@ -70,7 +75,7 @@ function Inventory() {
           onChange={updateField}
           onSubmit={saveItem}
         />
-        <InventoryList items={items} />
+        <InventoryList items={items} onDelete={deleteItem} />
       </div>
     </div>
   );

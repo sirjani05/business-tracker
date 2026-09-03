@@ -1,6 +1,6 @@
-import { ArrowDown, Boxes } from "lucide-react";
+import { ArrowDown, Boxes, Trash2 } from "lucide-react";
 
-function InventoryList({ items }) {
+function InventoryList({ items, onDelete }) {
   return (
     <section className="panel recent-sales">
       <div className="panel-heading">
@@ -44,6 +44,15 @@ function InventoryList({ items }) {
                     )}
                   </small>
                 </div>
+                <button
+                  className="inventory-delete"
+                  type="button"
+                  onClick={() => onDelete(item.id)}
+                  aria-label={`Delete ${item.name}`}
+                  title={`Delete ${item.name}`}
+                >
+                  <Trash2 size={15} />
+                </button>
               </div>
             );
           })}
