@@ -1,6 +1,24 @@
-import { Building2, Check, Mail, Phone, Save, UserRound } from "lucide-react";
+import {
+  Building2,
+  Camera,
+  Check,
+  Mail,
+  Phone,
+  Save,
+  UserRound,
+  X,
+} from "lucide-react";
+import { useState } from "react";
 
 function SettingsForm({ profile, onSave }) {
+  const [profileImage, setProfileImage] = useState(profile.profileImage || "");
+  function updateImage(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setProfileImage(reader.result);
+    reader.readAsDataURL(file);
+  }
   return (
     <form
       className="settings-form"
@@ -8,6 +26,7 @@ function SettingsForm({ profile, onSave }) {
         event.preventDefault();
         onSave({
           ...Object.fromEntries(new FormData(event.currentTarget)),
+          profileImage,
         });
       }}
     >
@@ -22,6 +41,35 @@ function SettingsForm({ profile, onSave }) {
           </div>
         </div>
         <div className="settings-form-grid">
+          <label className="profile-image-field">
+            Profile picture
+            <div className="profile-image-picker">
+              <div className="settings-profile-avatar small">
+                {profileImage ? (
+                  <img src={profileImage} alt="Profile preview" />
+                ) : (
+                  <Camera size={18} />
+                )}
+              </div>
+              <input
+                name="profileImage"
+                type="file"
+                accept="image/*"
+                onChange={updateImage}
+              />
+              {profileImage && (
+                <button
+                  type="button"
+                  className="profile-image-remove"
+                  onClick={() => setProfileImage("")}
+                  aria-label="Remove profile picture"
+                  title="Remove profile picture"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          </label>
           <label>
             Full name
             <input
