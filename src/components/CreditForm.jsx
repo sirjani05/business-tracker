@@ -21,6 +21,16 @@ function CreditForm({ currency, form, saved, onChange, onSubmit }) {
         />
       </label>
       <label>
+        WhatsApp number <span className="optional">optional</span>
+        <input
+          name="phone"
+          type="tel"
+          value={form.phone}
+          onChange={onChange}
+          placeholder="e.g. 263771234567"
+        />
+      </label>
+      <label>
         What did they take? <span className="optional">optional</span>
         <input
           name="description"

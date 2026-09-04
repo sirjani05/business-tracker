@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreditForm from "../components/CreditForm";
 import CreditList from "../components/CreditList";
-import { ZIG_PER_USD } from "../data/currency";
 
 function Credit({ currency }) {
   const [entries, setEntries] = useState(() =>
@@ -9,37 +8,88 @@ function Credit({ currency }) {
   );
   const [form, setForm] = useState({
     customer: "",
+    phone: "",
     description: "",
     amount: "",
     dueDate: "",
   });
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState("");
+  useEffect(() => {
+    fetch("/api/credits")
+      .then((response) => {
+        if (!response.ok) throw new Error("API unavailable");
+        return response.json();
+      })
+      .then((remoteEntries) => {
+        setEntries(remoteEntries);
+        localStorage.setItem("vanzwe-credit", JSON.stringify(remoteEntries));
+      })
+      .catch(() =>
+        setApiError("Backend unavailable. Entries are saved on this device."),
+      )
+      .finally(() => setLoading(false));
+  }, []);
   function updateField(event) {
     setForm({ ...form, [event.target.name]: event.target.value });
     setSaved(false);
   }
-  function saveEntry(event) {
+  async function saveEntry(event) {
     event.preventDefault();
     const amount = Number(form.amount);
     const entry = {
       id: Date.now(),
       ...form,
-      amount: currency === "ZiG" ? amount / ZIG_PER_USD : amount,
-      originalAmount: currency === "ZiG" ? amount / ZIG_PER_USD : amount,
-      currency: "USD",
+      amount,
+      currency,
     };
-    const nextEntries = [entry, ...entries].slice(0, 30);
-    setEntries(nextEntries);
-    localStorage.setItem("vanzwe-credit", JSON.stringify(nextEntries));
-    window.dispatchEvent(new Event("vanzwe-credit-updated"));
-    setForm({ customer: "", description: "", amount: "", dueDate: "" });
-    setSaved(true);
+    try {
+      const response = await fetch("/api/credits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entry),
+      });
+      if (!response.ok) throw new Error("Could not save credit");
+      const savedEntry = await response.json();
+      const nextEntries = [
+        savedEntry,
+        ...entries.filter((item) => item.id !== savedEntry.id),
+      ].slice(0, 30);
+      setEntries(nextEntries);
+      localStorage.setItem("vanzwe-credit", JSON.stringify(nextEntries));
+      setApiError("");
+      window.dispatchEvent(new Event("vanzwe-credit-updated"));
+      setForm({
+        customer: "",
+        phone: "",
+        description: "",
+        amount: "",
+        dueDate: "",
+      });
+      setSaved(true);
+    } catch {
+      setApiError(
+        "Could not reach the backend. Start it with npm run dev:server.",
+      );
+    }
   }
-  function markPaid(entryId) {
+  async function markPaid(entryId) {
+    await fetch(`/api/credits/${entryId}`, { method: "DELETE" });
     const nextEntries = entries.filter((entry) => entry.id !== entryId);
     setEntries(nextEntries);
     localStorage.setItem("vanzwe-credit", JSON.stringify(nextEntries));
     window.dispatchEvent(new Event("vanzwe-credit-updated"));
+  }
+  async function remindCustomer(entry) {
+    const response = await fetch(`/api/reminders/${entry.id}`, {
+      method: "POST",
+    });
+    if (!response.ok) return setApiError("Could not create the reminder.");
+    const reminder = await response.json();
+    if (reminder.whatsappUrl)
+      window.open(reminder.whatsappUrl, "_blank", "noopener,noreferrer");
+    else setApiError("Add a WhatsApp number to open a reminder chat.");
   }
   return (
     <div className="entry-page">
@@ -53,6 +103,11 @@ function Credit({ currency }) {
           <strong>{entries.length}</strong>
         </div>
       </section>
+      {apiError && (
+        <p className="success-message" role="status">
+          {apiError}
+        </p>
+      )}
       <div className="sales-layout">
         <CreditForm
           currency={currency}
@@ -61,7 +116,12 @@ function Credit({ currency }) {
           onChange={updateField}
           onSubmit={saveEntry}
         />
-        <CreditList entries={entries} currency={currency} onPaid={markPaid} />
+        <CreditList
+          entries={loading ? [] : entries}
+          currency={currency}
+          onPaid={markPaid}
+          onRemind={remindCustomer}
+        />
       </div>
     </div>
   );

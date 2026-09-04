@@ -5,15 +5,24 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const app = express();
-const port = process.env.PORT || 4000;
+const port = globalThis.process?.env.PORT || 4000;
 const dataPath = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "data.json",
 );
-const exchangeRate = Number(process.env.ZIG_PER_USD || 40);
+const exchangeRate = Number(globalThis.process?.env.ZIG_PER_USD || 40);
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/", (_request, response) => {
+  response.json({
+    name: "Business Tracker API",
+    status: "running",
+    frontend: "http://localhost:5173",
+    health: "/api/health",
+  });
+});
 
 async function readData() {
   try {

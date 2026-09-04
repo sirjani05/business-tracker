@@ -2,7 +2,7 @@ import { ArrowUpRight, Check, CreditCard } from "lucide-react";
 import { formatCurrency } from "../data/currency";
 import { getCreditBalance, getOverdueWeeks } from "../data/credit";
 
-function CreditList({ entries, currency, onPaid }) {
+function CreditList({ entries, currency, onPaid, onRemind }) {
   return (
     <section className="panel recent-sales">
       <div className="panel-heading">
@@ -38,14 +38,27 @@ function CreditList({ entries, currency, onPaid }) {
               </div>
               <div className="debt-amount">
                 <strong>
-                  {formatCurrency(getCreditBalance(entry), currency)}
+                  {formatCurrency(
+                    getCreditBalance({
+                      ...entry,
+                      amount:
+                        entry.amountUsd ?? entry.originalAmount ?? entry.amount,
+                      originalAmount:
+                        entry.amountUsd ?? entry.originalAmount ?? entry.amount,
+                    }),
+                    currency,
+                  )}
                 </strong>
                 {getOverdueWeeks(entry) > 0 && (
                   <small className="overdue-note">
                     +10% · week {getOverdueWeeks(entry)}
                   </small>
                 )}
-                <button aria-label={`Remind ${entry.customer}`}>
+                <button
+                  aria-label={`Remind ${entry.customer}`}
+                  onClick={() => onRemind(entry)}
+                  title="Send WhatsApp reminder"
+                >
                   <ArrowUpRight size={14} />
                 </button>
                 <button

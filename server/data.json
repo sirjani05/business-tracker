@@ -1,0 +1,17 @@
+{
+  "credits": [
+    {
+      "id": 1788518633396,
+      "customer": "Mildred",
+      "phone": "+263784436756",
+      "description": "Cooking oil, tomatoes, wheat, rice and mealie-meal",
+      "amount": 5,
+      "currency": "USD",
+      "amountUsd": 5,
+      "dueDate": "2026-09-04",
+      "reminderEnabled": true,
+      "createdAt": "2026-09-04T10:43:53.490Z"
+    }
+  ],
+  "reminders": []
+}
