@@ -37,25 +37,27 @@ function Settings({ profile, onSave, role }) {
       </section>
       <div className="settings-layout">
         <section className="settings-intro">
-          <button
-            className="profile-holder settings-profile-avatar"
-            onClick={() => setProfileModalOpen(true)}
-            aria-label="View profile picture"
-          >
-            {profile.profileImage ? (
-              <img
-                src={profile.profileImage}
-                alt={`${profile.ownerName} profile`}
-              />
-            ) : (
-              profile.ownerName
-                .split(" ")
-                .map((part) => part[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase()
-            )}
-          </button>
+          {role === "customer" && (
+            <button
+              className="profile-holder settings-profile-avatar"
+              onClick={() => setProfileModalOpen(true)}
+              aria-label="View profile picture"
+            >
+              {profile.profileImage ? (
+                <img
+                  src={profile.profileImage}
+                  alt={`${profile.ownerName} profile`}
+                />
+              ) : (
+                profile.ownerName
+                  .split(" ")
+                  .map((part) => part[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()
+              )}
+            </button>
+          )}
           <h3>{profile.ownerName}</h3>
           <p>{profile.businessName}</p>
           <small>Your information stays on this device.</small>
