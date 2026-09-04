@@ -862,6 +862,9 @@
   text-align: right;
 }
 .debt-amount button {
+  cursor: pointer;
+}
+.debt-amount .remind-button {
   border: 0;
   background: #fff4ef;
   color: #e57960;
@@ -871,6 +874,36 @@
   margin-top: 4px;
   display: grid;
   place-items: center;
+}
+.debt-amount .remind-button:hover,
+.debt-amount .remind-button:focus-visible {
+  background: #ffe5dc;
+  color: #c95740;
+  outline: 0;
+}
+.debt-amount .paid-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 30px;
+  margin: 8px 0 0 6px;
+  padding: 0 10px;
+  border: 1px solid #b8dfca;
+  border-radius: 7px;
+  background: #f0fbf5;
+  color: #31845d;
+  font:
+    700 10px "DM Sans",
+    sans-serif;
+  white-space: nowrap;
+}
+.debt-amount .paid-button:hover,
+.debt-amount .paid-button:focus-visible {
+  border-color: #62b58a;
+  background: #dff5e8;
+  color: #246b49;
+  outline: 0;
 }
 .soft-button {
   width: 100%;

@@ -1,17 +1,24 @@
 {
   "credits": [
     {
-      "id": 1788518633396,
-      "customer": "Mildred",
-      "phone": "+263784436756",
+      "id": 1788521143969,
+      "customer": "Takura Mlambo",
+      "phone": "+263712950774",
       "description": "Cooking oil, tomatoes, wheat, rice and mealie-meal",
-      "amount": 5,
+      "amount": 50,
       "currency": "USD",
-      "amountUsd": 5,
-      "dueDate": "2026-09-04",
+      "amountUsd": 50,
+      "dueDate": "2026-09-07",
       "reminderEnabled": true,
-      "createdAt": "2026-09-04T10:43:53.490Z"
+      "createdAt": "2026-09-04T11:25:43.997Z"
     }
   ],
-  "reminders": []
+  "reminders": [
+    {
+      "id": 1788520085078,
+      "creditId": 1788520079230,
+      "sentAt": "2026-09-04T11:08:05.078Z",
+      "channel": "whatsapp"
+    }
+  ]
 }

@@ -55,6 +55,7 @@ function CreditList({ entries, currency, onPaid, onRemind }) {
                   </small>
                 )}
                 <button
+                  className="remind-button"
                   aria-label={`Remind ${entry.customer}`}
                   onClick={() => onRemind(entry)}
                   title="Send WhatsApp reminder"
@@ -63,9 +64,10 @@ function CreditList({ entries, currency, onPaid, onRemind }) {
                 </button>
                 <button
                   className="paid-button"
+                  aria-label={`Mark ${entry.customer} as paid`}
                   onClick={() => onPaid(entry.id)}
                 >
-                  <Check size={13} /> Paid
+                  <Check size={14} /> <span>Mark as paid</span>
                 </button>
               </div>
             </div>
